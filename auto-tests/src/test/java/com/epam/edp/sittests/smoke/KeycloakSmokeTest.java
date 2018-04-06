@@ -34,8 +34,9 @@ public class KeycloakSmokeTest {
             .param("password", "admin")
         .when()
             .post(urlBuilder.buildUrl("http",
-                        "keycloak",
-                        "auth/realms/master/protocol/openid-connect/token"))
+                    "keycloak",
+                    "edp-cockpit",
+                    "auth/realms/master/protocol/openid-connect/token"))
         .then()
             .statusCode(HttpStatus.SC_OK)
             .contentType(ContentType.JSON)
@@ -50,7 +51,10 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http", "keycloak", "auth/admin/realms/{realm}"))
+            .get(urlBuilder.buildUrl("http",
+                    "keycloak",
+                    "edp-cockpit",
+                    "auth/admin/realms/{realm}"))
         .then()
             .statusCode(HttpStatus.SC_OK);
     }
@@ -62,7 +66,10 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http", "keycloak", "auth/admin/realms/{realm}/roles"))
+            .get(urlBuilder.buildUrl("http",
+                    "keycloak",
+                    "edp-cockpit",
+                    "auth/admin/realms/{realm}/roles"))
         .then()
             .statusCode(HttpStatus.SC_OK)
             .body("findAll().name", hasItems("jenkins-dev", "jenkins-qa", "jenkins-admin"));
@@ -75,7 +82,10 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http", "keycloak", "auth/admin/realms/{realm}/roles"))
+            .get(urlBuilder.buildUrl("http",
+                    "keycloak",
+                    "edp-cockpit",
+                    "auth/admin/realms/{realm}/roles"))
         .then()
             .statusCode(HttpStatus.SC_OK)
             .body("findAll().name", hasItems("gerrit-dev", "gerrit-reviewer", "gerrit-admin", "gerrit-user"));
@@ -88,7 +98,10 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http", "keycloak", "auth/admin/realms/{realm}/roles"))
+            .get(urlBuilder.buildUrl("http",
+                    "keycloak",
+                    "edp-cockpit",
+                    "auth/admin/realms/{realm}/roles"))
         .then()
             .statusCode(HttpStatus.SC_OK)
             .body("findAll {it.composite == true}.name", hasItems("developer", "teamlead", "qa", "devops"));
@@ -104,7 +117,10 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .post(urlBuilder.buildUrl("http", "keycloak", "auth/admin/realms/{realm}/users"))
+            .post(urlBuilder.buildUrl("http",
+                    "keycloak",
+                    "edp-cockpit",
+                    "auth/admin/realms/{realm}/users"))
         .then()
             .statusCode(HttpStatus.SC_CREATED)
         .extract()
