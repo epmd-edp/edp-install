@@ -47,7 +47,7 @@ public class KeycloakSmokeTest {
             .param("username", "admin")
             .param("password", "admin")
         .when()
-            .post(urlBuilder.buildUrl("http",
+            .post(urlBuilder.buildUrl("https",
                     "keycloak",
                     "edp-cockpit",
                     "auth/realms/master/protocol/openid-connect/token"))
@@ -65,7 +65,7 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http",
+            .get(urlBuilder.buildUrl("https",
                     "keycloak",
                     "edp-cockpit",
                     "auth/admin/realms/{realm}"))
@@ -80,7 +80,7 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http",
+            .get(urlBuilder.buildUrl("https",
                     "keycloak",
                     "edp-cockpit",
                     "auth/admin/realms/{realm}/roles"))
@@ -96,7 +96,7 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http",
+            .get(urlBuilder.buildUrl("https",
                     "keycloak",
                     "edp-cockpit",
                     "auth/admin/realms/{realm}/roles"))
@@ -112,7 +112,7 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .get(urlBuilder.buildUrl("http",
+            .get(urlBuilder.buildUrl("https",
                     "keycloak",
                     "edp-cockpit",
                     "auth/admin/realms/{realm}/roles"))
@@ -131,7 +131,7 @@ public class KeycloakSmokeTest {
             .auth()
             .oauth2(keycloakAccessToken)
         .when()
-            .post(urlBuilder.buildUrl("http",
+            .post(urlBuilder.buildUrl("https",
                     "keycloak",
                     "edp-cockpit",
                     "auth/admin/realms/{realm}/users"))
