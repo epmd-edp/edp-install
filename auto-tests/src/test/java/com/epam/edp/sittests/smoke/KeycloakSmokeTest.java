@@ -74,23 +74,23 @@ public class KeycloakSmokeTest {
     }
 
     @Test
-    public void testKeycloakShouldHaveJenkinsRolesInRealmCI() {
+    public void testKeycloakShouldHaveDeveloperRolesInRealmCI() {
         given()
-            .pathParam("realm", "CI")
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .get(urlBuilder.buildUrl("https",
-                    "keycloak",
-                    "edp-cockpit",
-                    "auth/admin/realms/{realm}/roles"))
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("findAll().name", hasItems("jenkins-dev", "jenkins-qa", "jenkins-admin"));
+                .pathParam("realm", "CI")
+                .auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .get(urlBuilder.buildUrl("https",
+                        "keycloak",
+                        "edp-cockpit",
+                        "auth/admin/realms/{realm}/roles"))
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("findAll().name", hasItems("sonar-users", "jenkins-users", "gerrit-users"));
     }
 
     @Test
-    public void testKeycloakShouldHaveGerritRolesInRealmCI() {
+    public void testKeycloakShouldHaveAdministratorRolesInRealmCI() {
         given()
             .pathParam("realm", "CI")
             .auth()
@@ -102,7 +102,7 @@ public class KeycloakSmokeTest {
                     "auth/admin/realms/{realm}/roles"))
         .then()
             .statusCode(HttpStatus.SC_OK)
-            .body("findAll().name", hasItems("gerrit-dev", "gerrit-reviewer", "gerrit-admin", "gerrit-user"));
+            .body("findAll().name", hasItems("sonar-administrators", "jenkins-administrators", "gerrit-administrators"));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class KeycloakSmokeTest {
                     "auth/admin/realms/{realm}/roles"))
         .then()
             .statusCode(HttpStatus.SC_OK)
-            .body("findAll {it.composite == true}.name", hasItems("developer", "teamlead", "qa", "devops"));
+            .body("findAll {it.composite == true}.name", hasItems("administrator","developer"));
     }
 
     @Test
