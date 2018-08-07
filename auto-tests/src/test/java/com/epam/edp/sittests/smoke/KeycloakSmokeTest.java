@@ -15,6 +15,7 @@ limitations under the License. */
 package com.epam.edp.sittests.smoke;
 
 import io.restassured.http.ContentType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -28,62 +29,50 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
  * @author Pavlo_Yemelianov
  */
 public class KeycloakSmokeTest {
-    private UrlBuilder urlBuilder;
     private String keycloakAccessToken;
+    private String realm;
 
     @BeforeClass
     @Parameters("ocpEdpSuffix")
     public void setUp(String ocpEdpSuffix) {
-        this.urlBuilder = new UrlBuilder(ocpEdpSuffix);
+        this.realm = StringUtils.isEmpty(ocpEdpSuffix) ? "edp" : "edp-" + ocpEdpSuffix;
     }
 
     @BeforeMethod
     public void setUpAccessToken() {
-        this.keycloakAccessToken =
-        given()
-            .contentType(ContentType.URLENC)
-            .param("client_id", "admin-cli")
-            .param("grant_type", "password")
-            .param("username", "admin")
-            .param("password", "admin")
-        .when()
-            .post(urlBuilder.buildUrl("https",
-                    "keycloak",
-                    "edp-cockpit",
-                    "auth/realms/master/protocol/openid-connect/token"))
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .contentType(ContentType.JSON)
-        .extract()
-            .path("access_token");
+        this.keycloakAccessToken = given()
+                .contentType(ContentType.URLENC)
+                .param("client_id", "admin-cli")
+                .param("grant_type", "password")
+                .param("username", "admin")
+                .param("password", "admin")
+                .when()
+                .post(StringConstants.KEYCLOAK_URL + "/auth/realms/master/protocol/openid-connect/token")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .extract()
+                .path("access_token");
     }
 
     @Test
     public void testKeycloakShouldHaveRealmCI() {
-        given()
-            .pathParam("realm", "CI")
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .get(urlBuilder.buildUrl("https",
-                    "keycloak",
-                    "edp-cockpit",
-                    "auth/admin/realms/{realm}"))
-        .then()
-            .statusCode(HttpStatus.SC_OK);
+        given().pathParam("realm", realm)
+                .auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .get(StringConstants.KEYCLOAK_URL + "/auth/admin/realms/{realm}")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
     }
 
     @Test
     public void testKeycloakShouldHaveDeveloperRolesInRealmCI() {
-        given()
-                .pathParam("realm", "CI")
+        given().pathParam("realm", realm)
                 .auth()
                 .oauth2(keycloakAccessToken)
                 .when()
-                .get(urlBuilder.buildUrl("https",
-                        "keycloak",
-                        "edp-cockpit",
-                        "auth/admin/realms/{realm}/roles"))
+                .get(StringConstants.KEYCLOAK_URL + "/auth/admin/realms/{realm}/roles")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("findAll().name", hasItems("sonar-users", "jenkins-users", "gerrit-users"));
@@ -91,68 +80,54 @@ public class KeycloakSmokeTest {
 
     @Test
     public void testKeycloakShouldHaveAdministratorRolesInRealmCI() {
-        given()
-            .pathParam("realm", "CI")
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .get(urlBuilder.buildUrl("https",
-                    "keycloak",
-                    "edp-cockpit",
-                    "auth/admin/realms/{realm}/roles"))
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("findAll().name", hasItems("sonar-administrators", "jenkins-administrators", "gerrit-administrators"));
+        given().pathParam("realm", realm)
+                .auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .get(StringConstants.KEYCLOAK_URL + "/auth/admin/realms/{realm}/roles")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("findAll().name", hasItems("sonar-administrators", "jenkins-administrators", "gerrit-administrators"));
     }
 
     @Test
     public void testKeycloakShouldHaveCompositeRolesInRealmCI() {
-        given()
-            .pathParam("realm", "CI")
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .get(urlBuilder.buildUrl("https",
-                    "keycloak",
-                    "edp-cockpit",
-                    "auth/admin/realms/{realm}/roles"))
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("findAll {it.composite == true}.name", hasItems("administrator","developer"));
+        given().pathParam("realm", realm)
+                .auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .get(StringConstants.KEYCLOAK_URL + "/auth/admin/realms/{realm}/roles")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("findAll {it.composite == true}.name", hasItems("administrator", "developer"));
     }
 
     @Test
     public void testKeycloakCreatedUserHasRoleDeveloperByDefault() {
-        String userLocation =
-        given()
-            .contentType(ContentType.JSON)
-            .body("{\"username\": \"test\"}")
-            .pathParam("realm", "CI")
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .post(urlBuilder.buildUrl("https",
-                    "keycloak",
-                    "edp-cockpit",
-                    "auth/admin/realms/{realm}/users"))
-        .then()
-            .statusCode(HttpStatus.SC_CREATED)
-        .extract()
-            .header("Location");
+        String userLocation = given()
+                .contentType(ContentType.JSON)
+                .body("{\"username\": \"test\"}")
+                .pathParam("realm", realm)
+                .auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .post(StringConstants.KEYCLOAK_URL + "/auth/admin/realms/{realm}/users")
+                .then()
+                .statusCode(HttpStatus.SC_CREATED)
+                .extract()
+                .header("Location");
 
-        given()
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .get(userLocation + "/role-mappings")
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("realmMappings.findAll().name", hasItems("developer"));
+        given().auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .get(userLocation + "/role-mappings")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("realmMappings.findAll().name", hasItems("developer"));
 
-        given()
-            .auth()
-            .oauth2(keycloakAccessToken)
-        .when()
-            .delete(userLocation);
+        given().auth()
+                .oauth2(keycloakAccessToken)
+                .when()
+                .delete(userLocation);
     }
 }
