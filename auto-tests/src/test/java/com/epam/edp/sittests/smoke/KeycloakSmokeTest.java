@@ -33,9 +33,9 @@ public class KeycloakSmokeTest {
     private String realm;
 
     @BeforeClass
-    @Parameters("ocpEdpSuffix")
-    public void setUp(String ocpEdpSuffix) {
-        this.realm = StringUtils.isEmpty(ocpEdpSuffix) ? "edp" : "edp-" + ocpEdpSuffix;
+    @Parameters("ocpEdpPrefix")
+    public void setUp(String ocpEdpPrefix) {
+        this.realm = StringUtils.isEmpty(ocpEdpPrefix) ? "edp" : ocpEdpPrefix + "-edp";
     }
 
     @BeforeMethod
