@@ -45,7 +45,7 @@ public class KeycloakSmokeTest {
                 .param("client_id", "admin-cli")
                 .param("grant_type", "password")
                 .param("username", "admin")
-                .param("password", "admin")
+                .param("password", "K0LBOJ2I")
                 .when()
                 .post(StringConstants.KEYCLOAK_URL + "/auth/realms/master/protocol/openid-connect/token")
                 .then()
