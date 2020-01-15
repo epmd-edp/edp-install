@@ -21,9 +21,18 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import com.openshift.internal.restclient.model.Secret;
+import com.openshift.restclient.ResourceKind;
+import com.openshift.restclient.ClientBuilder;
+import io.qameta.allure.Feature;
+import com.openshift.restclient.IClient;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
+
+import static com.epam.edp.sittests.smoke.StringConstants.OPENSHIFT_MASTER_URL;
+import static com.epam.edp.sittests.smoke.StringConstants.OPENSHIFT_PASSWORD;
+import static com.epam.edp.sittests.smoke.StringConstants.OPENSHIFT_USERNAME;
 
 /**
  * @author Pavlo_Yemelianov
@@ -31,6 +40,18 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 public class KeycloakSmokeTest {
     private String keycloakAccessToken;
     private String realm;
+    private IClient openShiftClient;
+
+    @Feature("Setup Openshift Client")
+    @BeforeClass
+    public void setUpOpenShiftClient() {
+        this.openShiftClient = new ClientBuilder()
+                .toCluster(OPENSHIFT_MASTER_URL)
+                .withUserName(OPENSHIFT_USERNAME)
+                .withPassword(OPENSHIFT_PASSWORD)
+                .sslCertCallbackWithDefaultHostnameVerifier(false)
+                .build();
+    }
 
     @BeforeClass
     @Parameters("ocpEdpPrefix")
