@@ -40,12 +40,17 @@ public class KeycloakSmokeTest {
 
     @BeforeMethod
     public void setUpAccessToken() {
+        Secret secret = openShiftClient.get(ResourceKind.SECRET, "keycloak", "security");
+
+        String userName = new String(secret.getData("username")).trim();
+        String userPassword = new String(secret.getData("password")).trim();
+
         this.keycloakAccessToken = given()
                 .contentType(ContentType.URLENC)
                 .param("client_id", "admin-cli")
                 .param("grant_type", "password")
-                .param("username", "******")
-                .param("password", "******")
+                .param("username", userName)
+                .param("password", userPassword)
                 .when()
                 .post(StringConstants.KEYCLOAK_URL + "/auth/realms/master/protocol/openid-connect/token")
                 .then()
