@@ -29,3 +29,5 @@ COPY . ./
 RUN chown -R edp:edp .
 
 USER edp
+
+
