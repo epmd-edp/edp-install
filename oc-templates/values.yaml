@@ -1,0 +1,26 @@
+edp:
+  name: "voronin-test"
+  version: "quay.io/county/edp-install:5.1.1"
+  additionalToolsTemplate: "test-cm"
+  superAdmins: "viktor_voronin@epam.com"
+  admins: ""
+  viewers: ""
+  dnsWildCard: "delivery.aws.main.edp.projects.epam.com"
+  storageClass: "gp2"
+  devDeploy: "false"
+jenkins:
+  version: "epamedp/edp-jenkins:2.2.0"
+  volumeCapacity: "10Gi"
+  stagesVersion: "master"
+  pipelinesVersion: "master"
+adminConsole:
+  version: "epamedp/edp-admin-console:2.2.1"
+vcs:
+  enabled: "false"
+  toolName: ""
+  groupName: ""
+  sshPort: "22"
+perf:
+  enabled: "false"
+  nodeId: ""
+  url: ""
