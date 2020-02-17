@@ -26,7 +26,7 @@
     {{ console_tool }} -n security get secret keycloak
     --template={% raw %}'{{ index .data "password" }}'{% endraw %} | base64 --decode
   register: password
-  no_log: true
+  no_log: false
   check_mode: no
 
 - name: "Install Keycloak secret for admin connection"
@@ -34,7 +34,7 @@
     {{ console_tool }} -n {{ project_cicd }} create secret generic keycloak-main-secret
     --from-literal=username={{ username.stdout }}
     --from-literal=password={{ password.stdout }}
-  no_log: true
+  no_log: false
 
 - set_fact:
     keycloak_super_admins: "{{ keycloak_super_admins | default([]) + [ { 'username': item } ] }}"

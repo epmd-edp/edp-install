@@ -1,0 +1,12 @@
+{{- if .Values.edp.create_project -}}
+apiVersion: v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/display-name: System project for EDP deployment
+  name: {{ .Values.edp.name }}
+spec:
+  finalizers:
+  - openshift.io/origin
+  - kubernetes
+{{- end -}}
