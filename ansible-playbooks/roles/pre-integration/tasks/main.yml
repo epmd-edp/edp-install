@@ -23,6 +23,13 @@
     --namespace={{ project_cicd }}
   when: "project_cicd not in current_projects_list"
 
+- name: "Create rolebinding for edp service account"
+  shell: >
+    {{ console_tool }} create rolebinding admin-role-to-{{ project_cicd }}-edp-sa
+    --clusterrole=admin
+    --serviceaccount={{ project_cicd }}:edp
+    --namespace={{ project_cicd }}
+
 - name: "Looking for shared secrets"
   shell: >
      {{ console_tool }} get secret -n {{ edp_deploy_project }} -o custom-columns=NAME:.metadata.name
