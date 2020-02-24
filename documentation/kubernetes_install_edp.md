@@ -194,7 +194,6 @@ kubectl -n edp-deploy create secret generic admin-console-db --from-literal=user
     - [codebase-operator](https://github.com/epmd-edp/codebase-operator)
     - [reconciler](https://github.com/epmd-edp/reconciler)
     - [cd-pipeline-operator](https://github.com/epmd-edp/cd-pipeline-operator)
-    - [edp-component-operator](https://github.com/epmd-edp/edp-component-operator)
     - [nexus-operator](https://github.com/epmd-edp/nexus-operator)
     - [sonar-operator](https://github.com/epmd-edp/sonar-operator)
     - [admin-console-operator](https://github.com/epmd-edp/admin-console-operator)
@@ -328,3 +327,15 @@ Find below the sample of launching a Helm template for EDP installation:
 helm install <helm_release_name> --namespace edp-deploy kubernetes-templates
 ```
 * The full installation with integration between tools will take at least 10 minutes.
+* Add EDP Component CR in the namespace, created after installation (<edp_name>-cicd) for Docker Registry with specified
+URL for it.
+```yaml
+apiVersion: v1.edp.epam.com/v1alpha1
+kind: EDPComponent
+metadata:
+  name: arbitraryName
+ spec:
+  icon: bas64 encoded image
+  type: docker-registry #this value should be exactly the same
+  url: url for docker registry
+```
