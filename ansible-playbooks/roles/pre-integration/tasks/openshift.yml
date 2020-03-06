@@ -91,7 +91,7 @@
     - "../templates/*.j2"
 
 - name: "Adding templates to Openshift"
-  shell: "{{ console_tool }} create -f {{ item }} -n {{ project_cicd }} "
+  shell: "{{ console_tool }} apply -f {{ item }} -n {{ project_cicd }} "
   with_fileglob:
     - "../templates/*.yaml"
 
