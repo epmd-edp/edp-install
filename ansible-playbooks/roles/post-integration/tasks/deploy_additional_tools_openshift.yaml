@@ -40,6 +40,8 @@
   - set_fact:
       users: "{{ users + edp_admins|join(',') + '}' }}"
 
+  - name: Check Helm chart is installed
+
   - name: Install Helm Chart
     shell: >
       helm install additional-tools --namespace={{ project_cicd }} --set edpName={{ edp_name }} --set dnsWildCard={{ dns_wildcard }} --set users='{{ users }}' {{ role_path }}/files
