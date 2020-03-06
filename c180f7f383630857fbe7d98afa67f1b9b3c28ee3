@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2589318_edca8f1f",
+        "filename": "ansible-playbooks/roles/pre-integration/tasks/main.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2020-03-06T10:04:39Z",
+      "side": 1,
+      "message": "Lets move this functionality in Helm",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 34
+      },
+      "revId": "c180f7f383630857fbe7d98afa67f1b9b3c28ee3",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": false
+    }
+  ]
+}
