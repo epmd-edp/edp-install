@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "197a68be_f387251e",
+        "filename": "deploy-templates/templates/job.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2020-03-20T13:52:19Z",
+      "side": 1,
+      "message": "This values should be defined in values.yaml",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 61
+      },
+      "revId": "74ab94788f7fd3c68d7dece9e40ce1e1a85ca812",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": false
+    }
+  ]
+}
