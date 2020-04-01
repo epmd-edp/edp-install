@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1624f756_1db9480e",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000007
+      },
+      "writtenOn": "2020-04-01T11:05:35Z",
+      "side": 1,
+      "message": "We should as well remove install_helm2.md file because we don\u0027t use it",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 137
+      },
+      "revId": "780701c41995e0077757628426695f5010bd4b6e",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
