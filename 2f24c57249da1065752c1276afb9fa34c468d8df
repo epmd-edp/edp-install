@@ -1,0 +1,9 @@
+Code-Review+1: Mykola Marusenko <mykola_marusenko@epam.com>
+Code-Review+2: Iryna Churkina <iryna_churkina@epam.com>
+Code-Review-1: Viktor Voronin <viktor_voronin@epam.com>
+Verified+1: CI Jenkins
+Submitted-by: Viktor Voronin <viktor_voronin@epam.com>
+Submitted-at: Fri, 03 Apr 2020 07:25:30 +0000
+Reviewed-on: https://gerrit-oc-green-edp-cicd.delivery.aws.main.edp.projects.epam.com/c/edp-install/+/668
+Project: edp-install
+Branch: refs/heads/master
