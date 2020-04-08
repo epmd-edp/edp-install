@@ -1,0 +1,139 @@
+# Google Container Registry Integration
+
+This chapter contains an accurate description of how to use the Google container registry (GCR) for further keeping of the produced by EDP containers.
+
+## Prerequisites
+Assuming that cluster is running under the GCP service account, for instance, **712239771395-compute@developer.gserviceaccount.com**
+(**cluster_sa**)
+
+## GCR Integration Flow
+Discover the steps below to apply the GCR integration correctly:
+
+1. Create a custom role, for instance, **Storage_C1714468**, for the **cluster_sa** with the following permissions:
+
+    * storage.buckets.create
+    * storage.buckets.delete
+    * storage.buckets.get
+    * storage.buckets.list
+    * storage.buckets.update
+    * storage.objects.create
+    * storage.objects.delete
+    * storage.objects.get
+    * storage.objects.list
+    * storage.objects.update
+    
+    _**NOTE**: Probably, such permissions should be requested from a support team._
+
+2. Grant this role to **cluster_sa** and check that it is assigned:
+
+    ![go_Grant_custom_role](../documentation-resources/go_Grant_custom_role.png "go_Grant_custom_role")
+ 
+    _**NOTE**: Probably, it is necessary to request this assignment via a support team as well._
+
+3. Create a key file and save it with the **kaniko-secret.json** name. To do this, simply navigate to "IAM & Admin -> Service Accounts":
+                                                                        
+    ![go_to_IAM](../documentation-resources/go_to_IAM2.png "go_to_IAM")
+
+     * Find the **cluster_sa**, click the Actions menu and select the Create key option:
+
+      ![go_to_Create_key.png](../documentation-resources/go_to_Create_key2.png "go_to_Create_key.png")
+
+     * Select the JSON key type and click CREATE:
+
+      ![go_Create.png](../documentation-resources/go_Create.png "go_Create.png")
+ 
+   _**NOTE**: Keep it secure in order to be authorized to Kaniko while accessing a Google Container Registry*._
+
+4. Go to the cluster console and create a Secret with the **kaniko-secret** name in the **demo-edp-cicd** namespace from the previous file:
+   ```
+   kubectl -n demo-edp-cicd create secret generic kaniko-secret --from-file kaniko-secret.json
+   ```
+5. Create a ConfigMap object with the **kaniko-template** name in the **demo-edp-cicd** namespace by applying the following template:
+   
+   ```
+   apiVersion: v1
+   data:
+     kaniko.json: |-
+       {
+         "apiVersion": "v1",
+         "kind": "Pod",
+         "metadata": {
+           "name": "kaniko"
+         },
+         "spec": {
+           "initContainers": [
+             {
+               "name": "init-kaniko",
+               "image": "busybox",
+               "command": [
+                 "/bin/sh",
+                 "-c",
+                 "while ! [[ -f /tmp/workspace/Dockerfile ]]; do echo \"Waiting for Dockerfile in workspace...\"; sleep 10;done"
+               ],
+               "volumeMounts": [
+                 {
+                   "name": "shared-volume",
+                   "mountPath": "/tmp/workspace"
+                 }
+               ]
+             },
+           ],
+           "containers": [
+             {
+               "name": "kaniko",
+               "image": "gcr.io/kaniko-project/executor:v0.13.0",
+               "env": [
+                 {
+                   "name": "GOOGLE_APPLICATION_CREDENTIALS",
+                   "value": "/secret/kaniko-secret.json"
+                 }
+               ],
+               "args": [
+                 "--destination=REPLACE_DESTINATION_IMAGE"
+               ],
+               "volumeMounts": [
+                 {
+                   "name": "shared-volume",
+                   "mountPath": "/workspace"
+                 },
+                 {
+                   "name": "kaniko-secret",
+                   "mountPath": "/secret"
+                 }
+               ]
+             }
+           ],
+           "restartPolicy": "Never",
+           "volumes": [
+             {
+               "name": "shared-volume",
+               "emptyDir": {}
+             },
+             {
+               "name": "kaniko-secret",
+               "secret": {
+                 "secretName": "kaniko-secret"
+               }
+             }
+           ]
+         }
+       }
+   kind: ConfigMap
+   metadata:  
+     name: kaniko-template 
+   ```
+6. Before running pipelines, create EDP component that points to the Google Container Registry URL, which will be **gcr.io/<GCP_Project_ID>**. For instance, **gcr.io/or2-msq-epmd-edp-t1iylu**. Use the following template to create EDP component:
+
+   ```
+   apiVersion: v1.edp.epam.com/v1alpha1
+   kind: EDPComponent
+   metadata:
+     name: docker-registry
+   spec:
+     icon: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPg0KPCEtLSBDcmVhdGVkIHdpdGggSW5rc2NhcGUgKGh0dHA6Ly93d3cuaW5rc2NhcGUub3JnLykgYnkgTWFyc3VwaWxhbWkgLS0+DQo8c3ZnDQogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIg0KICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIg0KICAgdmVyc2lvbj0iMS4xIg0KICAgd2lkdGg9IjcxOSINCiAgIGhlaWdodD0iNzY4Ig0KICAgdmlld0JveD0iLTEuNzMzODY3MSAtMS43MzM4NjcxIDYxLjI2MzMwNDIgNjUuNDA4MjI5MiINCiAgIGlkPSJzdmc0NTQ1MyI+DQogIDxkZWZzDQogICAgIGlkPSJkZWZzNDU0NTUiIC8+DQogIDxwYXRoDQogICAgIGQ9Im0gNTQuMjI3ODIsMTEuOTg2NjE1IGMgLTAuNTcyNSwtMS4xODI1IC0xLjIzNSwtMi4zMjM3NTA0IC0yLjAwMzc1LC0zLjQwMDAwMDQgbCAtOC4yMTI1LDIuOTg4NzUwNCBjIDAuOTU1LDAuOTc3NSAxLjc1NzUsMi4wNzYyNSAyLjQxMzc1LDMuMjUxMjUgbCA3LjgwMjUsLTIuODQgeiBtIC0zNi4zMDI4Nyw5LjA4MzM4IC04LjIxNSwyLjk4ODc1IGMgMC4xMDUsMS4zMTc1IDAuMzMyNSwyLjYxODc1IDAuNjUxMjUsMy44OTM3NSBsIDcuODAzNzUsLTIuODQxMjUgYyAtMC4yNTM3NSwtMS4zMiAtMC4zNDM3NSwtMi42OCAtMC4yNCwtNC4wNDEyNSINCiAgICAgaWQ9InBhdGg0NDU2MCINCiAgICAgc3R5bGU9ImZpbGw6I2MyMjEzMztmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZSIgLz4NCiAgPHBhdGgNCiAgICAgZD0ibSAzNi4xNTYyLDkuNjYwMTE0NiBjIDEuNzA4NzUsMC43OTc1MDA0IDMuMTg4NzUsMS44ODUwMDA0IDQuNDM3NSwzLjE2MDAwMDQgbCA4LjIxMjUsLTIuOTg4NzUwNCBjIC0yLjI3NSwtMy4xOTI1IC01LjM3Mzc1LC01Ljg2IC05LjE3LC03LjYzMTI1IC0xMS43NDEyNSwtNS40NzUgLTI1Ljc0ODc1LC0wLjM3NzUgLTMxLjIyMjUsMTEuMzYyNTAwNCAtMS43NzI1LDMuNzk4NzUgLTIuNDMxMjUsNy44MzM3NSAtMi4xMjEyNSwxMS43NDEyNSBsIDguMjEzNzUsLTIuOTg4NzUgYyAwLjEzNjI1LC0xLjc4IDAuNTcsLTMuNTYzNzUgMS4zNjYyNSwtNS4yNzM3NSBDIDE5LjQyOTk1LDkuNDEzODY0NiAyOC41Mjg3LDYuMTAzODY0NiAzNi4xNTYyLDkuNjYwMTE0NiINCiAgICAgaWQ9InBhdGg0NDU2NCINCiAgICAgc3R5bGU9ImZpbGw6I2RiMjEyZTtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZSIgLz4NCiAgPHBhdGgNCiAgICAgZD0ibSA0NC45MTU4MiwyNC42NjgyNDUgYyAtMC4xMzEyNSwxLjc3ODc1IC0wLjU4LDMuNTYyNSAtMS4zNzg3NSw1LjI3Mzc1IC0zLjU1NjI1LDcuNjI4NzUgLTEyLjY1NjI1LDEwLjkzODc1IC0yMC4yODI1LDcuMzgyNSAtMS43MTEyNSwtMC43OTg3NSAtMy4yMDI1LC0xLjg3NzUgLTQuNDQ2MjUsLTMuMTU1IGwgLTguMTk2MjUsMi45ODI1IGMgMi4yNywzLjE5MjUgNS4zNjUsNS44NjEyNSA5LjE2Mzc1LDcuNjMzNzUgMTEuNzQxMjUsNS40NzM3NSAyNS43NDYyNSwwLjM3NjI1IDMxLjIyMTI1LC0xMS4zNjUgMS43NzM3NSwtMy43OTYyNSAyLjQyNzUsLTcuODMxMjUgMi4xMTUsLTExLjczNSBsIC04LjE5NjI1LDIuOTgyNSB6Ig0KICAgICBpZD0icGF0aDQ0NTcyIg0KICAgICBzdHlsZT0iZmlsbDojZGIyMTJlO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIiAvPg0KICA8cGF0aA0KICAgICBkPSJtIDQ2LjkzNTQ1LDE0LjY0MTExNSAtNy44MDM3NSwyLjg0IGMgMS40NSwyLjU5NzUgMi4xMzUsNS41ODc1IDEuOTEsOC41OTUgbCA4LjE5NjI1LC0yLjk4MTI1IGMgLTAuMjM1LC0yLjk0MTI1IC0xLjAxODc1LC01LjgxMjUgLTIuMzAyNSwtOC40NTM3NSBtIC0zNi4wNjI3NSwxMy4xMjQgLTcuODAzNzUsMi44NDI1IGMgMC43MTYyNSwyLjg0NSAxLjk2LDUuNTQ4NzUgMy42Nyw3Ljk1NSBsIDguMTk1LC0yLjk4Mzc1IGMgLTIuMTAzNzUsLTIuMTYgLTMuNTAyNSwtNC44OTM3NSAtNC4wNjEyNSwtNy44MTM3NSINCiAgICAgaWQ9InBhdGg0NDU3NiINCiAgICAgc3R5bGU9ImZpbGw6I2ViMjEyNjtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZSIgLz4NCiAgPHBhdGgNCiAgICAgZD0ibSA1My4wMzgzMiw5LjgyMjk5NDYgYyAtMC4yNTg3NSwtMC40MiAtMC41Mjc1LC0wLjgzMzc1IC0wLjgxMzc1LC0xLjIzNjI1IGwgLTguMjEyNSwyLjk4ODc1MDQgYyAwLjM2MTI1LDAuMzcgMC42OTM3NSwwLjc2MjUgMS4wMTEyNSwxLjE2NSBsIDguMDE1LC0yLjkxNzUwMDQgeiBNIDE3Ljg5MzU3LDIyLjcxOTM2NSBjIC0wLjAyLC0wLjU0NzUgLTAuMDExMywtMS4wOTc1IDAuMDMxMiwtMS42NDg3NSBsIC04LjIxNSwyLjk4ODc1IGMgMC4wNDI1LDAuNTI2MjUgMC4xMDg3NSwxLjA0ODc1IDAuMTg3NSwxLjU3IGwgNy45OTYyNSwtMi45MSB6Ig0KICAgICBpZD0icGF0aDQ0NTg0Ig0KICAgICBzdHlsZT0iZmlsbDojYWQyMTNiO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIiAvPg0KICA8cGF0aA0KICAgICBkPSJtIDUzLjExMTU3LDIxLjY4NTYxNSAtOC4xOTYyNSwyLjk4MjUgYyAtMC4wODYzLDEuMTggLTAuMzE2MjUsMi4zNjI1IC0wLjY5MjUsMy41MjUgbCA4LjkyMTI1LC0zLjI1MjUgYyAwLjA2MzgsLTEuMDkgMC4wNTM3LC0yLjE3NzUgLTAuMDMyNSwtMy4yNTUgbSAtNDIuNDk4NzUsMTUuNDY3NSBjIDAuNjMxMjUsMC44ODg3NSAxLjMzLDEuNzM2MjUgMi4wODg3NSwyLjUzNjI1IGwgOC45MjI1LC0zLjI1Mzc1IGMgLTEuMDQyNSwtMC42NTI1IC0xLjk4NSwtMS40MTM3NSAtMi44MTYyNSwtMi4yNjYyNSBsIC04LjE5NSwyLjk4Mzc1IHoiDQogICAgIGlkPSJwYXRoNDQ1ODgiDQogICAgIHN0eWxlPSJmaWxsOiNiYTIxMzM7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmUiIC8+DQogIDxwYXRoDQogICAgIGQ9Im0gNTIuNjg5MzIsNTQuNTMyMTE1IDAsMC43NCAyLjE0NjI1LDAgMCw2LjU1Mzc1IDAuODEyNSwwIDAsLTYuNTUzNzUgMi4xNDc1LDAgMCwtMC43NCAtNS4xMDYyNSwwIHogbSAtNC45Mjg1LDAuNzM5MzggMCwyLjQxNzUgMiwwIDAsMC43NCAtMiwwIDAsMy4zOTYyNSAtMC44MTI1LDAgMCwtNy4yOTI1IDQuMjgyNSwwIDAsMC43Mzg3NSAtMy40NywwIHogbSAtMy43MTc3NSwtMC43Mzg1IDAuODEyNSwwIDAsNy4yOTM3NSAtMC44MTI1LDAgMCwtNy4yOTM3NSB6IG0gLTIuOTA0MjUsNy4yOTI4NyAwLC0zLjQzODc1IC0zLjYyNjI1LDAgMCwzLjQzODc1IC0wLjgxMjUsMCAwLC03LjI5Mzc1IDAuODEyNSwwIDAsMy4xMTYyNSAzLjYyNjI1LDAgMCwtMy4xMTYyNSAwLjgxMjUsMCAwLDcuMjkzNzUgLTAuODEyNSwwIHogbSAtOC42NjY3NSwwLjExNDYzIGMgLTAuOTksMCAtMS44NzYyNSwtMC40Mjc1IC0yLjQ0ODc1LC0xLjAxIGwgMC41NDI1LC0wLjYwNSBjIDAuNTUxMjUsMC41MzEyNSAxLjE4NzUsMC44NzYyNSAxLjkzNzUsMC44NzYyNSAwLjk2ODc1LDAgMS41NzM3NSwtMC40OCAxLjU3Mzc1LC0xLjI1MTI1IDAsLTAuNjc3NSAtMC40MDYyNSwtMS4wNjI1IC0xLjc0LC0xLjU0MjUgLTEuNTczNzUsLTAuNTYyNSAtMi4xMDUsLTEuMDcyNSAtMi4xMDUsLTIuMTI1IDAsLTEuMTY3NSAwLjkxNjI1LC0xLjg2NjI1IDIuMjgxMjUsLTEuODY2MjUgMC45OCwwIDEuNjA1LDAuMjkyNSAyLjIyLDAuNzgyNSBsIC0wLjUyMTI1LDAuNjM1IGMgLTAuNTMxMjUsLTAuNDM3NSAtMS4wMjEyNSwtMC42Nzc1IC0xLjc1LC0wLjY3NzUgLTEuMDAxMjUsMCAtMS40MTc1LDAuNSAtMS40MTc1LDEuMDczNzUgMCwwLjYwNSAwLjI3MTI1LDAuOTQ3NSAxLjczLDEuNDcgMS42MTUsMC41ODI1IDIuMTE1LDEuMTI1IDIuMTE1LDIuMjA4NzUgMCwxLjE0NjI1IC0wLjg5NjI1LDIuMDMxMjUgLTIuNDE3NSwyLjAzMTI1IG0gLTUuNzQxNSwtMC4xMTQ2MyAtMi42Nzc1LC0zLjk4IGMgLTAuMTc3NSwtMC4yNzEyNSAtMC40MTc1LC0wLjYzNjI1IC0wLjUxMTI1LC0wLjgyMzc1IDAsMC4yNzEyNSAwLjAyMTIsMS4xODc1IDAuMDIxMiwxLjU5Mzc1IGwgMCwzLjIxIC0xLjQzODc1LDAgMCwtNy4yOTM3NSAxLjM5NjI1LDAgMi41ODUsMy44NTUgYyAwLjE3NzUsMC4yNzEyNSAwLjQxNjI1LDAuNjM2MjUgMC41MSwwLjgyMzc1IDAsLTAuMjcxMjUgLTAuMDIsLTEuMTg3NSAtMC4wMiwtMS41OTUgbCAwLC0zLjA4Mzc1IDEuNDM3NSwwIDAsNy4yOTM3NSAtMS4zMDI1LDAgeiBtIC0xMS41MDExMiwwIDAsLTcuMjkzNzUgNS4wNjM3NSwwIDAsMS40Mjc1IC0zLjYwNSwwIDAsMS4yNjEyNSAyLjA5NSwwIDAsMS40MTYyNSAtMi4wOTUsMCAwLDEuNzYxMjUgMy43NjEyNSwwIDAsMS40Mjc1IC01LjIyLDAgeiBtIC00LjE0NDc1LC0yLjU4MzYyIC0xLjYwNSwwIDAsMi41ODM3NSAtMS40NTg3NSwwIDAsLTcuMjkzNzUgMy4xODg3NSwwIGMgMS4zNzUsMCAyLjUxMTI1LDAuNzYxMjUgMi41MTEyNSwyLjMxMjUgMCwxLjY4ODc1IC0xLjEyNSwyLjM5NzUgLTIuNjM2MjUsMi4zOTc1IG0gMC4wNzM4LC0zLjI5MjUgLTEuNjc4NzUsMCAwLDEuODc1IDEuNjk4NzUsMCBjIDAuNjc3NSwwIDEuMDQyNSwtMC4zMTM3NSAxLjA0MjUsLTAuOTQ4NzUgMCwtMC42MzUgLTAuNDE3NSwtMC45MjYyNSAtMS4wNjI1LC0wLjkyNjI1IE0gMy4yMSw2MS45NDA0OTUgYyAtMS45MDc1LDAgLTMuMjEsLTEuMzk2MjUgLTMuMjEsLTMuNzUxMjUgMCwtMi4zNTUgMS4zMjM3NSwtMy43NzI1IDMuMjMxMjUsLTMuNzcyNSAxLjg5NjI1LDAgMy4xOTg3NSwxLjM5NzUgMy4xOTg3NSwzLjc1MjUgMCwyLjM1NSAtMS4zMjM3NSwzLjc3MTI1IC0zLjIyLDMuNzcxMjUgbSAtMC4wMSwtNi4wNzUgYyAtMS4wMjEyNSwwIC0xLjY5ODc1LDAuODIzNzUgLTEuNjk4NzUsMi4zMDM3NSAwLDEuNDggMC43MDg3NSwyLjMyMjUgMS43MywyLjMyMjUgMS4wMjEyNSwwIDEuNjk3NSwtMC44MjI1IDEuNjk3NSwtMi4zMDI1IDAsLTEuNDggLTAuNzA3NSwtMi4zMjM3NSAtMS43Mjg3NSwtMi4zMjM3NSINCiAgICAgaWQ9InBhdGg0NDYyMiINCiAgICAgc3R5bGU9ImZpbGw6IzI0MWYyMTtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZSIgLz4NCjwvc3ZnPg0KPCEtLSB2ZXJzaW9uOiAyMDExMDMxMSwgb3JpZ2luYWwgc2l6ZTogNTcuNzk1NTcgNjEuOTQwNDk1LCBib3JkZXI6IDMlIC0tPg0K
+     type: docker-registry
+     url: gcr.io/or2-msq-epmd-edp-t1iylu
+   ```
+7. As a result, the built images will be displayed in the Container Registry section of the GCP Web console:
+
+    ![gcr_images](../documentation-resources/gcr_images.png "gcr_images")
