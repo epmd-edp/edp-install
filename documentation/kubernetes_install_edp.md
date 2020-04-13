@@ -40,6 +40,11 @@ kubectl -n <edp-project> create secret generic super-admin-db --from-literal=use
 
 * Deploy database from the following template:
 ```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres
+---
 apiVersion: v1 #PVC for EDP Install Wizard DB
 kind: PersistentVolumeClaim
 metadata:
@@ -129,7 +134,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: edp-install-wizard-db
-      serviceAccountName: edp
+      serviceAccountName: postgres
       volumes:
         - name: edp-install-wizard-db
           persistentVolumeClaim:
