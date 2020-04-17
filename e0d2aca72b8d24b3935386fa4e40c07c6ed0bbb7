@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbac126f_31c4d7a6",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000015
+      },
+      "writtenOn": "2020-04-17T09:16:33Z",
+      "side": 1,
+      "message": "Clone or download and extract the latest release version that should be installed to a separate folder;",
+      "range": {
+        "startLine": 33,
+        "startChar": 2,
+        "endLine": 33,
+        "endChar": 7
+      },
+      "revId": "e0d2aca72b8d24b3935386fa4e40c07c6ed0bbb7",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "906a94a6_9b1eb07d",
+        "filename": "documentation/openshift_install_edp.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000015
+      },
+      "writtenOn": "2020-04-17T09:16:33Z",
+      "side": 1,
+      "message": "Clone or download and extract the latest release version that should be installed to a separate folder;",
+      "range": {
+        "startLine": 29,
+        "startChar": 2,
+        "endLine": 29,
+        "endChar": 7
+      },
+      "revId": "e0d2aca72b8d24b3935386fa4e40c07c6ed0bbb7",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": false
+    }
+  ]
+}
