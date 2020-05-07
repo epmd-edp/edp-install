@@ -1,0 +1,7 @@
+Verified+1: CI Jenkins
+Code-Review+2: Serhii Shydlovskyi <serhii_shydlovskyi@epam.com>
+Submitted-by: Serhii Shydlovskyi <serhii_shydlovskyi@epam.com>
+Submitted-at: Thu, 07 May 2020 17:02:59 +0000
+Reviewed-on: https://gerrit-oc-green-edp-cicd.delivery.aws.main.edp.projects.epam.com/c/edp-install/+/2275
+Project: edp-install
+Branch: refs/heads/release-2.2
