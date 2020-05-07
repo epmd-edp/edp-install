@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "95494903_2a7e895a",
+        "filename": "deploy-templates/templates/job.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1000006
+      },
+      "writtenOn": "2020-05-07T08:35:55Z",
+      "side": 1,
+      "message": "I would make it more general like platform_web_console_url for both Openshift and K8S, since as far as I remember we use it only in EDPComponent, right?",
+      "range": {
+        "startLine": 67,
+        "startChar": 18,
+        "endLine": 67,
+        "endChar": 39
+      },
+      "revId": "472bbbe3db4236d95e13ad16bc292e2b1e537fee",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
