@@ -65,7 +65,7 @@ spec:
   type: ClusterIP
   sessionAffinity: None
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: keycloak
@@ -153,7 +153,7 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -229,7 +229,7 @@ spec:
 * Modify the "host" value (using `keycloak-<keycloak-namespace>.<your-domain.name>` format)
   in the following template and deploy it in a <keycloak-namespace> namespace:
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   annotations:
