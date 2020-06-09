@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "32113940_2863245b",
+        "filename": "deploy-templates/templates/additional_templates/jira_server.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2020-06-09T08:53:14Z",
+      "side": 1,
+      "message": "That is not Jira server, but Jira integrations, isn\u0027t it ?",
+      "range": {
+        "startLine": 1,
+        "startChar": 35,
+        "endLine": 1,
+        "endChar": 45
+      },
+      "revId": "a27df526c8120ea87d80746fdb329fc143237a4d",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61ee6ed4_4b54b5b2",
+        "filename": "deploy-templates/templates/kubernetes/privileged-policy.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2020-06-09T08:53:14Z",
+      "side": 1,
+      "message": "Move from extensions to policy API, same as in a restricted policy, please.",
+      "range": {
+        "startLine": 3,
+        "startChar": 12,
+        "endLine": 3,
+        "endChar": 22
+      },
+      "revId": "a27df526c8120ea87d80746fdb329fc143237a4d",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
