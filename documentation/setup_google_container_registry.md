@@ -4,7 +4,7 @@ This chapter contains an accurate description of how to use the Google container
 
 ## Prerequisites
 Assuming that cluster is running under the GCP service account, for instance, **712239771395-compute@developer.gserviceaccount.com**
-(**cluster_sa**)
+(**cluster_sa**).
 
 ## GCR Integration Flow
 Discover the steps below to apply the GCR integration correctly:
@@ -25,8 +25,9 @@ Discover the steps below to apply the GCR integration correctly:
     _**NOTE**: Probably, such permissions should be requested from a support team._
 
 2. Grant this role your service account which will be used to push images (e.g. cluster_sa) and check that it is assigned:
-![go_grant_custom_role](../documentation-resources/go_grant_custom_role.png "go_grant_custom_role")
-_**NOTE**: Probably, it is necessary to request this assignment via a support team as well._
+    ![go_grant_custom_role](../documentation-resources/go_grant_custom_role.png "go_grant_custom_role")
+
+    _**NOTE**: Probably, it is necessary to request this assignment via a support team as well._
 
 3. Create a key file in JSON format and save it with the **kaniko-secret.json** name. To do this, follow the steps below:
     
