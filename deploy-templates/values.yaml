@@ -63,33 +63,109 @@ keycloak:
   namespace: "keycloak"
   url: "https://keycloak-keycloak.delivery.aws.main.edp.projects.epam.com"
   secretToCopy: "keycloak"
-gerrit:
-  deploy: false
-  name: "gerrit"
-  image: "openfrontier/gerrit"
-  sshPort: "22"
-  version: "3.1.4"
-gitServer:
-  name: "gerrit"
-  user: "jenkins"
-  httpsPort: 443
-  nameSshKeySecret: "gerrit-ciuser-sshkey"
-  sshPort: 22
-jira:
-  integration: true
-  name: "epam-jira"
-  apiUrl: "https://jiraeu-api.epam.com"
-  rootUrl: "https://jiraeu.epam.com"
-  credentialName: "epam-jira-user"
-nexus:
-  deploy: true
-  name: "nexus"
-  image: "sonatype/nexus3"
-  version: "3.21.2"
-sonar:
-  deploy: true
-  name: "sonar"
-  image: "sonarqube"
-  version: "7.9-community"
 dockerRegistry:
   url: "093899590031.dkr.ecr.eu-central-1.amazonaws.com"
+
+keycloak-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/keycloak-operator-master
+    version: master-v1.4.0-alpha-22
+
+codebase-operator:
+  enabled: true
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/codebase-operator-master
+    version: master-v2.4.0-58
+  jira:
+    integration: true
+    name: "epam-jira"
+    apiUrl: "https://jiraeu-api.epam.com"
+    rootUrl: "https://jiraeu.epam.com"
+    credentialName: "epam-jira-user"
+
+jenkins-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/jenkins-operator-master
+    version: master-v2.4.0-83
+
+edp-component-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+
+cd-pipeline-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/cd-pipeline-operator-master
+    version: master-v2.4.0-23
+
+nexus-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/nexus-operator-master
+    version: master-v2.4.0-27
+  nexus:
+    deploy: true
+    name: "nexus"
+    image: "sonatype/nexus3"
+    version: "3.21.2"
+    dnsWildCard: "delivery.aws.main.edp.projects.epam.com"
+    admins:
+      - "userOne"
+      - "userTwo"
+
+sonar-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/sonar-operator-master
+    version: master-v2.4.0-47
+  sonar:
+    deploy: true
+    name: "sonar"
+    image: "sonarqube"
+    version: "7.9-community"
+    dnsWildCard: "delivery.aws.main.edp.projects.epam.com"
+
+admin-console-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/admin-console-operator-master
+    version: master-v2.4.0-28
+
+gerrit-operator:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/gerrit-operator-master
+    version: master-v2.4.0-25
+  gerrit:
+    deploy: true
+    name: "gerrit"
+    image: "openfrontier/gerrit"
+    sshPort: "30099"
+    version: "3.1.4"
+    admins:
+      - "userOne"
+      - "userTwo"
+  gitServer:
+    name: "gerrit"
+    user: "jenkins"
+    httpsPort: 443
+    nameSshKeySecret: "gerrit-ciuser-sshkey"
+    sshPort: 22
+    dnsWildCard: "delivery.aws.main.edp.projects.epam.com"
+
+reconciler:
+  enabled: false
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/reconciler-master
+    version: master-v2.4.0-42
