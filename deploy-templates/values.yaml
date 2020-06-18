@@ -25,6 +25,12 @@ edp:
     name: edp-install-wizard-db
     port: 5432
     host:
+    superAdminSecret:
+      name: super-admin
+      username: super-admin
+    tenantAdminSecret:
+      name: db-admin-console
+      username: admin
     storage:
       class: gp2
       size: 2Gi
@@ -57,33 +63,66 @@ keycloak:
   namespace: "keycloak"
   url: "https://keycloak-keycloak.delivery.aws.main.edp.projects.epam.com"
   secretToCopy: "keycloak"
-gerrit:
-  deploy: true
-  name: "gerrit"
-  image: "openfrontier/gerrit"
-  sshPort: "22"
-  version: "3.1.4"
-gitServer:
-  name: "gerrit"
-  user: "jenkins"
-  httpsPort: 443
-  nameSshKeySecret: "gerrit-ciuser-sshkey"
-  sshPort: 22
 jira:
   integration: true
   name: "epam-jira"
   apiUrl: "https://jiraeu-api.epam.com"
   rootUrl: "https://jiraeu.epam.com"
   credentialName: "epam-jira-user"
-nexus:
-  deploy: true
-  name: "nexus"
-  image: "sonatype/nexus3"
-  version: "3.21.2"
-sonar:
-  deploy: true
-  name: "sonar"
-  image: "sonarqube"
-  version: "7.9-community"
-dockerRegistry:
-  url: "093899590031.dkr.ecr.eu-central-1.amazonaws.com"
+
+keycloak-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/keycloak-operator-master
+    version: master-v1.4.0-alpha-22
+
+codebase-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/codebase-operator-master
+    version: master-v2.4.0-58
+
+jenkins-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/jenkins-operator-master
+    version: master-v2.4.0-83
+
+edp-component-operator:
+  namespace: "mm-helm-charts-test"
+
+cd-pipeline-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/cd-pipeline-operator-master
+    version: master-v2.4.0-23
+
+nexus-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/nexus-operator-master
+    version: master-v2.4.0-27
+
+sonar-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/sonar-operator-master
+    version: master-v2.4.0-47
+
+admin-console-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/admin-console-operator-master
+    version: master-v2.4.0-28
+
+gerrit-operator:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/gerrit-operator-master
+    version: master-v2.4.0-25
+
+reconciler:
+  namespace: "mm-helm-charts-test"
+  image:
+    name: docker-registry.default.svc:5000/oc-green-edp-cicd/reconciler-master
+    version: master-v2.4.0-42
