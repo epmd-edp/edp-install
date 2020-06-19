@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6dac73a8_4545dd40",
+        "filename": "deploy-templates/templates/edp-component/general.yaml",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2020-06-19T13:47:59Z",
+      "side": 0,
+      "message": "Is it file moved anywhere ? Or we just deleted it and that\u0027s it ?",
+      "revId": "1cfe7b731f3bd43d86ea31e5423260df10ffcfa6",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
