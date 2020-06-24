@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d8fcbb1_b8f86bc4",
+        "filename": "deploy-templates/templates/jenkins/jenkins.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2020-06-24T14:58:25Z",
+      "side": 0,
+      "message": "Why did we removed the Jenkins custom resource ?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 97
+      },
+      "revId": "1220d16c0945d82a85e63250c9c6fbf662265b08",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
