@@ -19,7 +19,7 @@ edp:
   adminGroups:
     - "tarianyk-helm-chart-edp-admin"
   developerGroups:
-    - "tarianyk-helm-chart-edp-developer"
+    - "tarianyk-helm-chart-edp-developer1"
   db:
     image: "postgres:9.6"
     name: edp-install-wizard-db
