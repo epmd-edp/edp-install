@@ -4,7 +4,7 @@ Inspect the prerequisites and the main steps to perform with the aim to install 
 
 ## Prerequisites
 1. OpenShift cluster installed with minimum 2 worker nodes with total capacity 16 Cores and 40Gb RAM;
-2. Load balancer (if any exists in front of OpenShift router or ingress controller) is configured with session stickiness, disabled HTTP/2 protocol and header size of 32k support;
+2. Load balancer (if any exists in front of OpenShift router or ingress controller) is configured with session stickiness, disabled HTTP/2 protocol and header size of 64k support;
     - Example of Config Map for Nginx ingress controller:
     ```yaml
     kind: ConfigMap
@@ -23,15 +23,16 @@ Inspect the prerequisites and the main steps to perform with the aim to install 
 3. Cluster nodes and pods should have access to the cluster via external URLs. For instance, you should add in AWS your VPC NAT gateway elastic IP to your cluster external load balancers security group);
 4. Keycloak instance is installed. To get accurate information on how to install Keycloak, please refer to the [Keycloak Installation on OpenShift](openshift_install_keycloak.md) instruction;
 5. The "openshift" realm is created in Keycloak;
-6. The "keycloak" secret with administrative access username and password exists in the namespace where Keycloak in installed;
-7. The installation machine with [oc](https://docs.okd.io/latest/cli_reference/get_started_cli.html#installing-the-cli) is installed with the cluster-admin access to the OpenShift cluster; 
-8. Helm 3.1 is installed on the installation machine with the help of the [Installing Helm](https://v3.helm.sh/docs/intro/install/) instruction.
+6. The installation machine with [oc](https://docs.okd.io/latest/cli_reference/get_started_cli.html#installing-the-cli) is installed with the cluster-admin access to the OpenShift cluster; 
+7. Helm 3.1 is installed on the installation machine with the help of the [Installing Helm](https://v3.helm.sh/docs/intro/install/) instruction.
 
-## Install EDP
-* Choose an EDP tenant name, e.g. "demo", and create the <edp-project> project with any name (e.g. "demo").
+## EDP project
+Choose an EDP tenant name, e.g. "demo", and create the <edp-project> projecte with this name.
 Before starting EDP deployment, EDP project <edp-project> in OpenShift should be created.
 
-* Create secret for EDP admin database user:
+## Install EDP
+You can use any existing Postgres database to store EDP data or create one during the installation. In any case you have to create two secrets in <edp-project> project: one with administrative credentials and one with credentials for EDP tenant (database schema). 
+* Create secret for administrative access to database:
 ```
 oc -n <edp-project> create secret generic super-admin-db --from-literal=username=<super_admin_db_username> --from-literal=password=<super_admin_db_password>
 ```
@@ -41,11 +42,26 @@ oc -n <edp-project> create secret generic super-admin-db --from-literal=username
 oc -n <edp-project> create secret generic db-admin-console --from-literal=username=<tenant_db_username> --from-literal=password=<tenant_db_password>
 ```
 
-* Apply EDP chart using Helm. 
+* EDP requires Keycloak access to perform integration. You should create secret with administrative access username and password manually or from existing secret using these commands as examples:  
 
-Find below the description of optional and mandatory parameters types.
+```bash
+oc -n <edp_main_keycloak_project> get secret <edp_main_keycloak_secret> --export -o yaml | oc -n <edp_cicd_project> apply -f -
+```
 
-Mandatory parameters: 
+* To add the Helm EPAMEDP Charts for local client, run "helm repo add":
+     ```bash
+     helm repo add epamedp https://chartmuseum.demo.edp-epam.com/
+     ```
+* Choose available Helm chart version:
+     ```bash
+     helm search repo epamedp/edp-install
+     NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+     epamedp/edp-install     2.4.0           1.16.0          A Helm chart for Kubernetes
+     ```
+
+     _**NOTE:** It is highly recommended to use the latest released version._
+
+* EDP installation chart has the following parameters: 
  ```   
     General parameters:
     - global.version                                                    # EDP version;
@@ -54,7 +70,7 @@ Mandatory parameters:
     - global.dnsWildCard                                                # DNS wildcard for routing in your K8S cluster;
     - global.admins                                                     # Administrators of your tenant separated by comma (,) (eg --set 'global.admins={test@example.com}');
     - global.developers                                                 # Developers of your tenant separated by comma (,) (eg --set 'global.developers={test@example.com}');
-    - global.database.deploy                                            # Deploy DB to current namespace or use from another;
+    - global.database.deploy                                            # Deploy DB to current project or use from another;
     - global.database.image                                             # DB image, e.g. postgres:9.6;
     - global.database.host                                              # Host to DB (<db-name>.<namespace>);
     - global.database.name                                              # Name of DB;
@@ -64,11 +80,6 @@ Mandatory parameters:
     - edp.webConsole                                                    # URL to Openshift Web console;
     - edp.adminGroups                                                   # Admin groups of your tenant separated by comma (,) (eg --set 'edp.adminGroups={test-admin-group}');
     - edp.developerGroups                                               # Developer groups of your tenant separated by comma (,) (eg --set 'edp.developerGroups={test-admin-group}');
-    - gitServer.name                                                    # GitServer CR name;
-    - gitServer.user                                                    # Git user to connect;
-    - gitServer.httpsPort                                               # HTTPS port;
-    - gitServer.nameSshKeySecret                                        # Name of secret with credentials to Git server;
-    - gitServer.sshPort                                                 # SSH port;
         
     Jenkins parameters:
     - jenkins-operator.image.name                                       # EDP image. The released image can be found on [Dockerhub](https://hub.docker.com/repository/docker/epamedp/jenkins-operator);
@@ -163,27 +174,16 @@ Mandatory parameters:
     - reconciler.image.version                                          # EDP tag. The released image can be found on [Dockerhub](https://hub.docker.com/repository/docker/epamedp/reconciler/tags);
  ```  
 
-For some reasons, you may want to integrate with DB from another namespace. To achieve this:
-   * Set global.database.host as <db-name>.<another_namespace>;
-   * Create 'super-admin-db' secret with credentials from existing admin credentials to DB;
-   * Create 'db-admin-console' secret;
+If you use external database set global.database.host value to database DNS name accessible from <edp-project> project;
 
-Inspect the sample of launching a Helm template for EDP installation:
+Install EDP in the <edp-project> project with helm command. Bellow is the installation command example:   
 ```bash
-helm install edp-install --wait --timeout=900s --namespace <edp-project> --set global.edpName=<edp-project> deploy-templates
+helm install epamedp/edp-install --wait --timeout=900s --namespace <edp-project> --set global.edpName=<edp-project> --set global.dnsWildCard=<k8s_cluster_DNS_wilcdard> --set global.platform=openshift
 ```
+
 As soon as Helm deploys components, create secrets for JIRA/GIT integration (if enabled) manually. Pay attention that 
 secret names must be the same as 'credentialName' property for JIRA and 'nameSshKeySecret' for GIT.
- 
- * Deploy operators in the <edp-project> project by following the corresponding instructions in their repositories:
-     - [keycloak-operator](https://github.com/epmd-edp/keycloak-operator)
-     - [codebase-operator](https://github.com/epmd-edp/codebase-operator)
-     - [reconciler](https://github.com/epmd-edp/reconciler)
-     - [cd-pipeline-operator](https://github.com/epmd-edp/cd-pipeline-operator)
-     - [nexus-operator](https://github.com/epmd-edp/nexus-operator)
-     - [sonar-operator](https://github.com/epmd-edp/sonar-operator)
-     - [admin-console-operator](https://github.com/epmd-edp/admin-console-operator)
-     - [gerrit-operator](https://github.com/epmd-edp/gerrit-operator)
-     - [jenkins-operator](https://github.com/epmd-edp/jenkins-operator)
-     
+      
 >_**NOTE**: The full installation with integration between tools will take at least 10 minutes._
+
+If you have installd EDP without Gerrit you have to configure [Github](https://github.com/epmd-edp/jenkins-operator/blob/master/documentation/github-integration.md) or [Gitlab](https://github.com/epmd-edp/jenkins-operator/blob/master/documentation/gitlab-integration.md) integration to work with EDP.
