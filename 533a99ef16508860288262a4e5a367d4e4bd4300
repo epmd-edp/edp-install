@@ -1,0 +1,7 @@
+Verified+1: CI Jenkins
+Code-Review+2: Iryna Churkina <iryna_churkina@epam.com>
+Submitted-by: Iryna Churkina <iryna_churkina@epam.com>
+Submitted-at: Thu, 23 Jul 2020 13:58:30 +0000
+Reviewed-on: https://gerrit-oc-green-edp-cicd.delivery.aws.main.edp.projects.epam.com/c/edp-install/+/3903
+Project: edp-install
+Branch: refs/heads/release/2.4
