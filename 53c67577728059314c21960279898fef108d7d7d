@@ -1,0 +1,7 @@
+Verified+1: CI Jenkins
+Code-Review+2: Anton Tarianyk <anton_tarianyk@epam.com>
+Submitted-by: Anton Tarianyk <anton_tarianyk@epam.com>
+Submitted-at: Tue, 18 Aug 2020 11:11:34 +0000
+Reviewed-on: https://gerrit-oc-green-edp-cicd.delivery.aws.main.edp.projects.epam.com/c/edp-install/+/4390
+Project: edp-install
+Branch: refs/heads/master
