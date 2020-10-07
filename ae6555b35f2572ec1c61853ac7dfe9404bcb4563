@@ -1,0 +1,7 @@
+Verified+1: CI Jenkins
+Code-Review+2: Mykola Marusenko <mykola_marusenko@epam.com>
+Submitted-by: Viktor Voronin <viktor_voronin@epam.com>
+Submitted-at: Wed, 07 Oct 2020 13:28:35 +0000
+Reviewed-on: https://gerrit-oc-green-edp-cicd.delivery.aws.main.edp.projects.epam.com/c/edp-install/+/5259
+Project: edp-install
+Branch: refs/heads/release/2.5
