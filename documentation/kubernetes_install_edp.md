@@ -209,6 +209,6 @@ Find below the basic installation command example for AWS cloud:
 * As soon as Helm deploys components, create secrets for JIRA/GIT integration (if enabled) manually. Pay attention that 
 secret names must be the same as 'credentialName' property for JIRA and 'nameSshKeySecret' for GIT.
  
->_**NOTE**: The full installation with integration between tools will take at least 10 minutes._
+>_**NOTE**: The full installation with integration between tools will take at least 10 minutes._ 
 
 * After the installation, it is necessary to configure the [GitHub](https://github.com/epmd-edp/admin-console/blob/release/2.5/documentation/github-integration.md#github-integration) or [GitLab](https://github.com/epmd-edp/admin-console/blob/release/2.5/documentation/gitlab-integration.md#gitlab-integration) integration to work with EDP. 
