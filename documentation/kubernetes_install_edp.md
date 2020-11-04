@@ -160,6 +160,8 @@ kubectl -n <edp_main_keycloak_project> get secret keycloak --export -o yaml | ku
     - admin-console-operator.adminConsole.pullSecrets                   # Secrets to pull from private Docker registry;
     - admin-console-operator.adminConsole.imagePullSecrets              # Secrets to pull from private Docker registry;
     - admin-console-operator.adminConsole.basePath                      # Base path for Admin Console URL;
+    - admin-console-operator.adminConsole.projectUrlMask                # URL mask for Admin Console project name;
+    - admin-console-operator.adminConsole.imageStreamUrlMask            # URL mask for Admin Console image stream name;
     
     Reconciler parameters:
     - reconciler.image.name                                             # EDP image. The released image can be found on [Dockerhub](https://hub.docker.com/r/epamedp/reconciler);
