@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "168c330b_49697267",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-05T09:56:50Z",
+      "side": 1,
+      "message": "k8s operates with namespaces unlike openshift (which operates projects)",
+      "revId": "0f9347fd3ac08cc7bf1a83740ddef3d64fdbf1b3",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
