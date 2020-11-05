@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2c00d32d_44f5d5f8",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-05T08:59:58Z",
+      "side": 1,
+      "message": "URL mask that leads to project in Openshift",
+      "revId": "be5e553b67993be3dcbe28bb5af113e382ca0dd5",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4403c5d_c8f398ec",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-05T08:59:58Z",
+      "side": 1,
+      "message": "the same",
+      "revId": "be5e553b67993be3dcbe28bb5af113e382ca0dd5",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "694a3a3a_f5befa07",
+        "filename": "documentation/openshift_install_edp.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-05T08:59:58Z",
+      "side": 1,
+      "message": "the same",
+      "revId": "be5e553b67993be3dcbe28bb5af113e382ca0dd5",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da775b9f_72a7d0e3",
+        "filename": "documentation/openshift_install_edp.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-05T08:59:58Z",
+      "side": 1,
+      "message": "the same",
+      "revId": "be5e553b67993be3dcbe28bb5af113e382ca0dd5",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
