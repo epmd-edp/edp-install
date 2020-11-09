@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd765e23_3bf5b682",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-09T10:45:32Z",
+      "side": 1,
+      "message": "change with (eg --set \u0027adminConsole.projectUrlMask\u003d/#/overview?namespace\u003d{namespace}\u0027)",
+      "revId": "850f1918af0e9d71603390d20e3dff2de8b4d7f3",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
