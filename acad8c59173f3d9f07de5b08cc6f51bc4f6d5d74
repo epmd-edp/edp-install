@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ebdfdbc_2e4065c7",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-11-10T08:24:14Z",
+      "side": 1,
+      "message": "examples ?",
+      "revId": "acad8c59173f3d9f07de5b08cc6f51bc4f6d5d74",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
