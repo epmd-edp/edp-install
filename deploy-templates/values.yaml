@@ -134,10 +134,12 @@ admin-console-operator:
   adminConsole:
     image: epamedp/edp-admin-console
     version: 2.5.0
-    imagePullSecrets:
     basePath: ""
+    imagePullSecrets:
+    authKeycloakEnabled: true
     projectUrlMask: "/console/project/{namespace}/overview"
     imageStreamUrlMask: "/console/project/{namespace}/browse/images/{stream}"
+    buildTools: "maven"
 
 gerrit-operator:
   image:
