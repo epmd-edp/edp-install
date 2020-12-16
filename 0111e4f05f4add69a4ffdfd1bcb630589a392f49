@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b02e4c46_c9ad7f04",
+        "filename": "deploy-templates/values.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-12-16T15:48:50Z",
+      "side": 1,
+      "message": "please remove this, since this is default in downstream helm chart",
+      "range": {
+        "startLine": 137,
+        "startChar": 1,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "0111e4f05f4add69a4ffdfd1bcb630589a392f49",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b245f787_36c98723",
+        "filename": "documentation/kubernetes_install_edp.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-12-16T15:48:50Z",
+      "side": 1,
+      "message": "let\u0027s keep this, but in future this MUST be refactored",
+      "revId": "0111e4f05f4add69a4ffdfd1bcb630589a392f49",
+      "serverId": "0350cb7f-c1b1-4710-a647-f6632dbafb3c",
+      "unresolved": true
+    }
+  ]
+}
