@@ -1,3 +1,6 @@
+|![](https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/156px-Warning.svg.png) | This project is moved to [https://github.com/epam/edp-install](https://github.com/epam/edp-install).
+|---|---|
+
 # EPAM Delivery Platform :rocket:
 
 **EPAM Delivery platform (EDP)** is out of the box integrated ecosystem for software development connected to a local development environment. 
